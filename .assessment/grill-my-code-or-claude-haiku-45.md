@@ -1,9 +1,9 @@
 ## Grill My Code
 
-> **Generated:** 2026-05-26 01:56:01 UTC
+> **Generated:** 2026-05-26 02:03:51 UTC
 
 
-> **Commits reviewed:** `6c9bd79` → `8911bd0`
+> **Commits reviewed:** `6c9bd79` → `d360241`
 
 > **Code Files Assessed:** `battleship.js`
 
@@ -19,9 +19,7 @@ do {
 } while (readlineSync.keyInYN('Play again?'));
 ```
 
-1. What is the purpose of the outer `do...while` loop at the top level of the program?
-
-   <!-- Lengths: C=104 | D1=93 | D2=94 | D3=53 -->
+1. What is the purpose of the `do...while` loop at the top level of the code?
 
 ---
 
@@ -32,9 +30,14 @@ function playGame() {
     const totalMissiles = 30; 
     let strikeAttempts = 0; 
     let totalStrikes = 0; 
-    // ...
+    let firstDisplay; 
+    let missilesRemaining; 
+    let hitsToWin; 
+
     const { totalTargets, locationsMap, targetsMap } = initializeMaps();
+
     displayResults(false, totalMissiles, totalTargets, targetsMap, firstDisplay = true);
+
     do {
         let launchCoordinates = getValidCoordinates(targetsMap);
         let targetStrike = checkForTargetStrike(launchCoordinates, locationsMap);
@@ -50,29 +53,29 @@ function playGame() {
 }
 ```
 
-2. What does the condition `hitsToWin !== 0 && missilesRemaining >= hitsToWin` in the inner `do...while` loop determine?
-
-   <!-- Lengths: C=137 | D1=109 | D2=110 | D3=71 -->
+2. Why is `strikeAttempts` initialized to `0` at the beginning of `playGame()`?
 
 ---
 
 **`battleship.js`**
 
 ```js
-function playGame() {
-    const totalMissiles = 30; 
-    let strikeAttempts = 0; 
-    let totalStrikes = 0; 
-    let firstDisplay; 
-    let missilesRemaining; 
-    let hitsToWin; 
-    // ...
-}
+do {
+    // ... game loop code ...
+} while (hitsToWin !== 0 && missilesRemaining >= hitsToWin);
 ```
 
-3. Why are `missilesRemaining` and `hitsToWin` declared but not initialized with values in the `playGame()` function?
+3. Under what two conditions does the game loop continue?
 
-   <!-- Lengths: C=139 | D1=117 | D2=124 | D3=122 -->
+---
+
+**`battleship.js`**
+
+```js
+const { totalTargets, locationsMap, targetsMap } = initializeMaps();
+```
+
+4. What does destructuring assignment do in this line?
 
 ---
 
@@ -91,24 +94,19 @@ function initializeMaps(locationsMapFilename) {
 }
 ```
 
-4. What is the purpose of `Array.from({ length: maxRows }).map(() => Array(maxCols).fill(undefined))` in the `initializeMaps()` function?
-
-   <!-- Lengths: C=100 | D1=128 | D2=94 | D3=105 -->
+5. What is the purpose of `Array.from({ length: maxRows }).map(() => Array(maxCols).fill(undefined))`?
 
 ---
 
 **`battleship.js`**
 
 ```js
-let totalTargets = 0;
 locationsMap.flat().forEach(value => {
     if (value === '1') { return (totalTargets += 1) }
 });
 ```
 
-5. What does the `locationsMap.flat()` method do before the `forEach` loop?
-
-   <!-- Lengths: C=110 | D1=87 | D2=90 | D3=87 -->
+6. What does `locationsMap.flat()` do?
 
 ---
 
@@ -129,9 +127,7 @@ function getLocationsMap() {
 }
 ```
 
-6. What do the ship sizes in the array `[2, 3, 3, 4, 5]` represent in the `getLocationsMap()` function?
-
-   <!-- Lengths: C=82 | D1=101 | D2=66 | D3=83 -->
+7. What do the numbers in the `ships` array represent?
 
 ---
 
@@ -147,9 +143,7 @@ if (isRandomizedMap) {
 }
 ```
 
-7. What format is the randomized map written to the file in the `writeFileContents()` call?
-
-   <!-- Lengths: C=116 | D1=101 | D2=68 | D3=90 -->
+8. What is written to `randomizedMap.txt` when the user chooses a randomized map?
 
 ---
 
@@ -165,9 +159,7 @@ function getRandomizedMap(maxRows, maxCols, ships) {
 }
 ```
 
-8. What initial value does each cell in the `locationsMap` have before ships are placed in `getRandomizedMap()`?
-
-   <!-- Lengths: C=5 | D1=11 | D2=5 | D3=6 -->
+9. What is the initial state of `locationsMap` before any ships are placed?
 
 ---
 
@@ -177,10 +169,12 @@ function getRandomizedMap(maxRows, maxCols, ships) {
 function placeShip(size, maxRows, maxCols, locationsMap) {
     let isValidPlacement;
     let shipCoordinates;
+
     do {
         isValidPlacement = true; 
         shipCoordinates = [];
         let { rndColumn, rndRow, rndIsHorizontal } = getRandomPosition(maxCols, maxRows);
+
         for (let i = 0; i < size; i++) {
             if (rndRow >= maxRows || rndColumn >= maxCols || locationsMap[rndColumn][rndRow] === '1') {
                 isValidPlacement = false;
@@ -194,15 +188,14 @@ function placeShip(size, maxRows, maxCols, locationsMap) {
             }
         }
     } while (!isValidPlacement); 
+
     shipCoordinates.forEach((validCoordinates) => {
         locationsMap[validCoordinates.rndColumn][validCoordinates.rndRow] = '1';
     });
 }
 ```
 
-9. What causes the `do...while` loop in `placeShip()` to restart if a ship placement attempt fails?
-
-   <!-- Lengths: C=132 | D1=91 | D2=92 | D3=96 -->
+10. What causes `isValidPlacement` to be set to `false` inside the `for` loop?
 
 ---
 
@@ -223,11 +216,24 @@ for (let i = 0; i < size; i++) {
 }
 ```
 
-10. If `isValidPlacement` is set to `false` inside the loop, what happens to the remaining iterations of the loop?
+11. If a ship placement is invalid partway through the loop, what happens to `shipCoordinates`?
 
-    <!-- Lengths: C=124 | D1=78 | D2=88 | D3=87 -->
+---
 
-    ---
+**`battleship.js`**
+
+```js
+function getRandomPosition(maxCols, maxRows) {
+    const rndIsHorizontal = Boolean(Math.round(Math.random()));
+    const rndColumn = Math.floor(Math.random() * maxCols);
+    const rndRow = Math.floor(Math.random() * maxRows);
+    return { rndColumn, rndRow, rndIsHorizontal };
+}
+```
+
+12. What does `Boolean(Math.round(Math.random()))` evaluate to?
+
+---
 
 **`battleship.js`**
 
@@ -236,17 +242,20 @@ function getValidCoordinates(targetsMap) {
     let coordinates; 
     let isValidChoice = false; 
     const { maxRows, maxCols } = getMaxRowsAndColumns(targetsMap);
+
     do {
         let errorMessages = [];  
         coordinates = readlineSync.question(chalk.green(`Choose your target (Ex. A1): `));
+
         try {
             if (!([2, 3].includes(coordinates.length))) {
                 errorMessages.push("Coordinates must be only 2 or 3 characters long.");
             }
-            // ... more validations
+            // ... more validation ...
         } catch (error) {  
             errorMessages.push(error);
         }
+
         if (errorMessages.length > 0) {
             log(chalk.rgb(255, 136, 0)(errorMessages.join('\n')));
             log(chalk.rgb(255, 136, 0)('Please Try Again.'));
@@ -256,29 +265,14 @@ function getValidCoordinates(targetsMap) {
             isValidChoice = true;
         }
     } while (!isValidChoice); 
+
     return coordinates; 
 }
 ```
 
-11. What is the purpose of the `errorMessages` array in the `getValidCoordinates()` function?
+13. What does the condition `!([2, 3].includes(coordinates.length))` check?
 
-    <!-- Lengths: C=137 | D1=99 | D2=98 | D3=91 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-if (!([2, 3].includes(coordinates.length))) {
-    errorMessages.push("Coordinates must be only 2 or 3 characters long.");
-}
-```
-
-12. What does the condition `!([2, 3].includes(coordinates.length))` check?
-
-    <!-- Lengths: C=93 | D1=88 | D2=82 | D3=82 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -288,11 +282,9 @@ if (!(/[a-z]/i.test(coordinates[0]))) {
 }
 ```
 
-13. What does the regex pattern `/[a-z]/i` in the validation check for?
+14. What does the `/[a-z]/i` regular expression match?
 
-    <!-- Lengths: C=125 | D1=87 | D2=84 | D3=92 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -302,25 +294,9 @@ if (!(coordinates[0].toUpperCase().charCodeAt(0) - 64 > 0)) {
 }
 ```
 
-14. What does the expression `coordinates[0].toUpperCase().charCodeAt(0) - 64` calculate?
+15. What does `charCodeAt(0) - 64` calculate for the letter 'A'?
 
-    <!-- Lengths: C=165 | D1=118 | D2=106 | D3=104 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-if (!(coordinates[0].toUpperCase().charCodeAt(0) - 64 <= maxCols)) {
-    errorMessages.push("The letter component must not be greater than the number of columns.");
-}
-```
-
-15. What does this validation ensure about the letter component of the coordinates?
-
-    <!-- Lengths: C=138 | D1=85 | D2=82 | D3=83 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -330,11 +306,9 @@ if (coordinates[1] === '0') {
 }
 ```
 
-16. Why does the validation reject coordinates where the number component begins with '0'?
+16. Why does this check compare `coordinates[1]` to the string `'0'` instead of the number `0`?
 
-    <!-- Lengths: C=154 | D1=104 | D2=108 | D3=86 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -344,11 +318,9 @@ if (!(/^[0-9]{1,2}$/.test(coordinates.slice(1, coordinates.length)))) {
 }
 ```
 
-17. What does the regex `/^[0-9]{1,2}$/` validate about the number component?
+17. What does `coordinates.slice(1, coordinates.length)` extract?
 
-    <!-- Lengths: C=128 | D1=73 | D2=102 | D3=109 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -360,11 +332,9 @@ if (!(/^[0-9]{1,2}$/.test(coordinates.slice(1, coordinates.length)))) {
 }
 ```
 
-18. When is `isValidChoice` set to `true` in the `getValidCoordinates()` function?
+18. When is `isValidChoice` set to `true`?
 
-    <!-- Lengths: C=119 | D1=112 | D2=89 | D3=81 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -379,11 +349,9 @@ function checkForTargetStrike(launchCoordinates, locationsMap) {
 }
 ```
 
-19. What does `checkForTargetStrike()` return if the targeted cell contains a ship?
+19. What does `checkForTargetStrike()` return?
 
-    <!-- Lengths: C=4 | D1=5 | D2=3 | D3=5 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -398,11 +366,9 @@ function checkForRepeatedStrike(launchCoordinates, targetsMap) {
 }
 ```
 
-20. How does `checkForRepeatedStrike()` determine if a position has already been targeted?
+20. What is the difference between `locationsMap` and `targetsMap`?
 
-    <!-- Lengths: C=160 | D1=89 | D2=99 | D3=81 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -417,30 +383,9 @@ function updateTargetMap(launchCoordinates, targetStrike, targetsMap) {
 }
 ```
 
-21. What value is stored in `targetsMap` when a strike hits a ship?
+21. What does `updateTargetMap()` store in `targetsMap` when `targetStrike` is `true`?
 
-    <!-- Lengths: C=5 | D1=5 | D2=6 | D3=5 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-function updateTargetMap(launchCoordinates, targetStrike, targetsMap) {
-    const { targetRow, targetColumn } = getRowAndColumn(launchCoordinates);
-    if (targetStrike === true) {
-        targetsMap[targetRow][targetColumn] = 'X'
-    } else {
-        targetsMap[targetRow][targetColumn] = 'O'
-    }
-}
-```
-
-22. What value is stored in `targetsMap` when a strike misses a ship?
-
-    <!-- Lengths: C=5 | D1=5 | D2=7 | D3=11 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -457,16 +402,13 @@ function displayResults(targetStrike, missilesRemaining, hitsToWin, targetsMap, 
             log(chalk.blue.bold('MISS!!!'));
         }
     }
-    drawMap(targetsMap);
-    // ... more code
+    // ... rest of function ...
 }
 ```
 
-23. What is the purpose of the `firstDisplay` parameter in the `displayResults()` function?
+22. What is the purpose of the `firstDisplay` parameter?
 
-    <!-- Lengths: C=128 | D1=73 | D2=65 | D3=89 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -482,11 +424,9 @@ if (hitsToWin === 0) {
 }
 ```
 
-24. What condition causes the player to lose the game?
+23. When does the player lose the game?
 
-    <!-- Lengths: C=126 | D1=87 | D2=83 | D3=98 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -498,15 +438,13 @@ function drawMap(targetsMap) {
         process.stdout.write(chalk.white.bold.bgBlack(`${String.fromCharCode(column + 65)} `));
     }
     process.stdout.write(chalk.white.bold.bgBlack(' \n'));
-    // ... more code
+    // ... rest of function ...
 }
 ```
 
-25. What does `String.fromCharCode(column + 65)` produce in the header row of the map?
+24. What does `String.fromCharCode(column + 65)` generate?
 
-    <!-- Lengths: C=118 | D1=87 | D2=82 | D3=68 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -531,11 +469,9 @@ for (let row = 0; row < maxRows; row++) {
 }
 ```
 
-26. What does `(row + 1).toString().padStart(2, ' ')` do when displaying row numbers?
+25. What does `(row + 1).toString().padStart(2, ' ')` do?
 
-    <!-- Lengths: C=138 | D1=96 | D2=87 | D3=91 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -553,55 +489,9 @@ switch (targetsMap[row][column]) {
 }
 ```
 
-27. What is displayed in a cell that contains `'X'` in the `targetsMap`?
+26. What is displayed when `targetsMap[row][column]` is `undefined`?
 
-    <!-- Lengths: C=73 | D1=73 | D2=73 | D3=73 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-switch (targetsMap[row][column]) {
-    case 'X':
-        process.stdout.write(chalk.red.bold.bgWhiteBright(`X `));
-        break;
-    case 'O':
-        process.stdout.write(chalk.blue.bold.bgWhiteBright(`O `));
-        break;
-    default:
-        process.stdout.write(chalk.white.bold.bgWhiteBright(`  `));
-        break;
-}
-```
-
-28. What is displayed in a cell that contains `'O'` in the `targetsMap`?
-
-    <!-- Lengths: C=73 | D1=73 | D2=73 | D3=73 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-switch (targetsMap[row][column]) {
-    case 'X':
-        process.stdout.write(chalk.red.bold.bgWhiteBright(`X `));
-        break;
-    case 'O':
-        process.stdout.write(chalk.blue.bold.bgWhiteBright(`O `));
-        break;
-    default:
-        process.stdout.write(chalk.white.bold.bgWhiteBright(`  `));
-        break;
-}
-```
-
-29. What is displayed in a cell that contains `undefined` in the `targetsMap`?
-
-    <!-- Lengths: C=74 | D1=82 | D2=68 | D3=68 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -613,27 +503,19 @@ function getRowAndColumn(launchCoordinates) {
 }
 ```
 
-30. If the player enters coordinates `'C5'`, what is the value of `targetColumn` returned by `getRowAndColumn()`?
+27. If the user enters 'A1', what values are returned by `getRowAndColumn()`?
 
-    <!-- Lengths: C=1 | D1=1 | D2=2 | D3=1 -->
-
-    ---
+---
 
 **`battleship.js`**
 
 ```js
-function getRowAndColumn(launchCoordinates) {
-    let targetRow = Number(launchCoordinates.slice(1, launchCoordinates.length)) - 1;
-    let targetColumn = launchCoordinates[0].toUpperCase().charCodeAt(0) - 65;
-    return { targetRow, targetColumn };
-}
+let targetRow = Number(launchCoordinates.slice(1, launchCoordinates.length)) - 1;
 ```
 
-31. If the player enters coordinates `'C5'`, what is the value of `targetRow` returned by `getRowAndColumn()`?
+28. Why is `- 1` subtracted from the row number?
 
-    <!-- Lengths: C=1 | D1=1 | D2=1 | D3=1 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -645,11 +527,9 @@ function getMaxRowsAndColumns(map) {
 }
 ```
 
-32. What does `getMaxRowsAndColumns()` assume about the `map` parameter?
+29. What does `map[0].length` represent?
 
-    <!-- Lengths: C=137 | D1=106 | D2=119 | D3=81 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -666,11 +546,9 @@ function getFileContents(fileName) {
 }
 ```
 
-33. What happens if the file specified by `fileName` does not exist when `getFileContents()` is called?
+30. What happens if the file specified by `fileName` does not exist?
 
-    <!-- Lengths: C=89 | D1=81 | D2=82 | D3=91 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -685,112 +563,35 @@ function writeFileContents(fileName, contents) {
 }
 ```
 
-34. What does the `flag: 'w'` option in `writeFileContents()` do?
+31. What does the `flag: 'w'` option do in `fs.writeFileSync()`?
 
-    <!-- Lengths: C=117 | D1=127 | D2=92 | D3=88 -->
-
-    ---
+---
 
 **`battleship.js`**
 
 ```js
-function getLocationsMap() {
-    let locationsMap; 
-    let isRandomizedMap = readlineSync.keyInYNStrict('Do you want to use a randomized map instead of the pre-defined one?');
-    if (isRandomizedMap) {
-        // ...
-    } else {
-        locationsMap = getFileContents('map.txt').split("\r\n").map((line) => line.split(','));
-    }
-    return locationsMap;
+const { totalTargets, locationsMap, targetsMap } = initializeMaps();
+displayResults(false, totalMissiles, totalTargets, targetsMap, firstDisplay = true);
+```
+
+32. Why is `firstDisplay = true` passed as an argument to `displayResults()`?
+
+---
+
+**`battleship.js`**
+
+```js
+let targetStrike = checkForTargetStrike(launchCoordinates, locationsMap);
+strikeAttempts += 1; 
+updateTargetMap(launchCoordinates, targetStrike, targetsMap);
+if (targetStrike) {
+    totalStrikes += 1;  
 }
 ```
 
-35. What does `.split("\r\n")` do when loading the map from a file?
+33. In what order do these operations occur after the player enters coordinates?
 
-    <!-- Lengths: C=131 | D1=99 | D2=92 | D3=99 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-locationsMap = getFileContents('map.txt').split("\r\n").map((line) => line.split(','));
-```
-
-36. What does `.map((line) => line.split(','))` do in the file loading process?
-
-    <!-- Lengths: C=128 | D1=87 | D2=81 | D3=88 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-function placeShip(size, maxRows, maxCols, locationsMap) {
-    let isValidPlacement;
-    let shipCoordinates;
-    do {
-        isValidPlacement = true; 
-        shipCoordinates = [];
-        let { rndColumn, rndRow, rndIsHorizontal } = getRandomPosition(maxCols, maxRows);
-        for (let i = 0; i < size; i++) {
-            if (rndRow >= maxRows || rndColumn >= maxCols || locationsMap[rndColumn][rndRow] === '1') {
-                isValidPlacement = false;
-            } else {
-                shipCoordinates.push({ rndColumn, rndRow });
-            }
-            if (rndIsHorizontal) {
-                rndColumn += 1; 
-            } else {
-                rndRow += 1; 
-            }
-        }
-    } while (!isValidPlacement); 
-    shipCoordinates.forEach((validCoordinates) => {
-        locationsMap[validCoordinates.rndColumn][validCoordinates.rndRow] = '1';
-    });
-}
-```
-
-37. What is the relationship between the `rndIsHorizontal` variable and how the ship is positioned?
-
-    <!-- Lengths: C=175 | D1=94 | D2=113 | D3=117 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-function playGame() {
-    const totalMissiles = 30; 
-    let strikeAttempts = 0; 
-    let totalStrikes = 0; 
-    let firstDisplay; 
-    let missilesRemaining; 
-    let hitsToWin; 
-    const { totalTargets, locationsMap, targetsMap } = initializeMaps();
-    displayResults(false, totalMissiles, totalTargets, targetsMap, firstDisplay = true);
-    do {
-        let launchCoordinates = getValidCoordinates(targetsMap);
-        let targetStrike = checkForTargetStrike(launchCoordinates, locationsMap);
-        strikeAttempts += 1; 
-        updateTargetMap(launchCoordinates, targetStrike, targetsMap);
-        if (targetStrike) {
-            totalStrikes += 1;  
-        }
-        missilesRemaining = totalMissiles - strikeAttempts;
-        hitsToWin = totalTargets - totalStrikes;
-        displayResults(targetStrike, missilesRemaining, hitsToWin, targetsMap);
-    } while (hitsToWin !== 0 && missilesRemaining >= hitsToWin);
-}
-```
-
-38. What is the difference between `strikeAttempts` and `totalStrikes` in the `playGame()` function?
-
-    <!-- Lengths: C=127 | D1=86 | D2=106 | D3=83 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -799,115 +600,9 @@ missilesRemaining = totalMissiles - strikeAttempts;
 hitsToWin = totalTargets - totalStrikes;
 ```
 
-39. How is `hitsToWin` calculated in the game loop?
+34. What do these two lines calculate?
 
-    <!-- Lengths: C=89 | D1=95 | D2=88 | D3=86 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-displayResults(false, totalMissiles, totalTargets, targetsMap, firstDisplay = true);
-```
-
-40. What does the first argument `false` represent in this call to `displayResults()`?
-
-    <!-- Lengths: C=161 | D1=85 | D2=93 | D3=76 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-function initializeMaps(locationsMapFilename) {
-    const locationsMap = getLocationsMap(locationsMapFilename);
-    // ...
-}
-```
-
-41. What is the purpose of the `locationsMapFilename` parameter in `initializeMaps()`?
-
-    <!-- Lengths: C=127 | D1=94 | D2=99 | D3=95 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-function getLocationsMap() {
-    let locationsMap; 
-    let isRandomizedMap = readlineSync.keyInYNStrict('Do you want to use a randomized map instead of the pre-defined one?');
-    if (isRandomizedMap) {
-        let ships = [2, 3, 3, 4, 5]; 
-        locationsMap = getRandomizedMap(10, 10, ships);
-        writeFileContents('randomizedMap.txt', locationsMap.map(row => row.join(',')).join('\n'));
-    } else {
-        locationsMap = getFileContents('map.txt').split("\r\n").map((line) => line.split(','));
-    }
-    return locationsMap;
-}
-```
-
-42. Why does `getLocationsMap()` not accept any parameters even though `initializeMaps()` has a `locationsMapFilename` parameter?
-
-    <!-- Lengths: C=200 | D1=124 | D2=102 | D3=124 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-function getRandomPosition(maxCols, maxRows) {
-    const rndIsHorizontal = Boolean(Math.round(Math.random()));
-    const rndColumn = Math.floor(Math.random() * maxCols);
-    const rndRow = Math.floor(Math.random() * maxRows);
-    return { rndColumn, rndRow, rndIsHorizontal };
-}
-```
-
-43. What does `Boolean(Math.round(Math.random()))` produce?
-
-    <!-- Lengths: C=145 | D1=90 | D2=98 | D3=124 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-for (let i = 0; i < size; i++) {
-    if (rndRow >= maxRows || rndColumn >= maxCols || locationsMap[rndColumn][rndRow] === '1') {
-        isValidPlacement = false;
-    } else {
-        shipCoordinates.push({ rndColumn, rndRow });
-    }
-    if (rndIsHorizontal) {
-        rndColumn += 1; 
-    } else {
-        rndRow += 1; 
-    }
-}
-```
-
-44. What happens if a ship placement attempt goes out of bounds during the loop?
-
-    <!-- Lengths: C=149 | D1=110 | D2=98 | D3=98 -->
-
-    ---
-
-**`battleship.js`**
-
-```js
-shipCoordinates.forEach((validCoordinates) => {
-    locationsMap[validCoordinates.rndColumn][validCoordinates.rndRow] = '1';
-});
-```
-
-45. What does this `forEach` loop do after a valid ship placement is confirmed?
-
-    <!-- Lengths: C=118 | D1=89 | D2=84 | D3=87 -->
-
-    ---
+---
 
 **`battleship.js`**
 
@@ -918,40 +613,82 @@ do {
 } while (readlineSync.keyInYN('Play again?'));
 ```
 
-46. What happens if the user answers "no" to the "Play again?" prompt?
+35. What does `readlineSync.keyInYN()` return?
 
-    <!-- Lengths: C=75 | D1=99 | D2=84 | D3=84 -->
-
-    ---
+---
 
 **`battleship.js`**
 
 ```js
-let totalTargets = 0;
-locationsMap.flat().forEach(value => {
-    if (value === '1') { return (totalTargets += 1) }
+let isRandomizedMap = readlineSync.keyInYNStrict('Do you want to use a randomized map instead of the pre-defined one?');
+```
+
+36. What is the difference between `keyInYN()` and `keyInYNStrict()`?
+
+---
+
+**`battleship.js`**
+
+```js
+const log = console.log;
+```
+
+37. Why is `console.log` assigned to a variable named `log`?
+
+---
+
+**`battleship.js`**
+
+```js
+ships.forEach((size) => {
+    placeShip(size, maxRows, maxCols, locationsMap);
 });
 ```
 
-47. What does the `return` statement inside the `forEach` callback do?
+38. What does this `forEach()` loop do?
 
-    <!-- Lengths: C=136 | D1=82 | D2=92 | D3=114 -->
-
-    ---
+---
 
 **`battleship.js`**
 
 ```js
-if (!(/[a-z]/i.test(coordinates[0]))) {
-    errorMessages.push("The first character must be a letter.");
+for (let i = 0; i < size; i++) {
+    // ... validation and coordinate collection ...
+    if (rndIsHorizontal) {
+        rndColumn += 1; 
+    } else {
+        rndRow += 1; 
+    }
 }
 ```
 
-48. What does the `!` operator do in this validation check?
+39. What does incrementing `rndColumn` or `rndRow` accomplish?
 
-    <!-- Lengths: C=152 | D1=86 | D2=87 | D3=78 -->
+---
 
-    ---
+**`battleship.js`**
+
+```js
+if (!([2, 3].includes(coordinates.length))) {
+    errorMessages.push("Coordinates must be only 2 or 3 characters long.");
+}
+```
+
+40. Why must coordinates be 2 or 3 characters long?
+
+---
+
+**`battleship.js`**
+
+```js
+if (!(coordinates[0].toUpperCase().charCodeAt(0) - 64 <= maxCols)) {
+    errorMessages.push("The letter component must not be greater than the number of columns.");
+}
+```
+
+41. What does this validation check ensure?
+
+---
 
 **`battleship.js`**
 
@@ -961,32 +698,97 @@ if (!(Number(coordinates.slice(1, coordinates.length)) > 0)) {
 }
 ```
 
-49. What does this validation check ensure about the number component?
+42. What is being checked with `> 0`?
 
-    <!-- Lengths: C=88 | D1=89 | D2=78 | D3=100 -->
+---
 
-    ---
+**`battleship.js`**
+
+```js
+if (!(Number(coordinates.slice(1, coordinates.length)) <= maxRows)) {
+    errorMessages.push("The number component cannot be greater than the number of rows.");
+}
+```
+
+43. What is the maximum valid row number the player can enter?
+
+---
+
+**`battleship.js`**
+
+```js
+shipCoordinates.forEach((validCoordinates) => {
+    locationsMap[validCoordinates.rndColumn][validCoordinates.rndRow] = '1';
+});
+```
+
+44. What does this code do after a valid ship placement is determined?
+
+---
+
+**`battleship.js`**
+
+```js
+while (hitsToWin !== 0 && missilesRemaining >= hitsToWin);
+```
+
+45. What does the condition `missilesRemaining >= hitsToWin` prevent?
+
+---
+
+**`battleship.js`**
+
+```js
+const { maxRows, maxCols } = getMaxRowsAndColumns(targetsMap);
+```
+
+46. Why is `getMaxRowsAndColumns()` called with `targetsMap` instead of `locationsMap`?
+
+---
+
+**`battleship.js`**
+
+```js
+if (value === '1') { return (totalTargets += 1) }
+```
+
+47. What does the `return` statement do in this context?
+
+---
+
+**`battleship.js`**
+
+```js
+locationsMap = getFileContents('map.txt').split("\r\n").map((line) => line.split(','));
+```
+
+48. What format is expected for the contents of `map.txt`?
+
+---
+
+**`battleship.js`**
+
+```js
+writeFileContents('randomizedMap.txt', locationsMap.map(row => row.join(',')).join('\n'));
+```
+
+49. What transformation is applied to `locationsMap` before writing to the file?
+
+---
 
 **`battleship.js`**
 
 ```js
 do {
-    let launchCoordinates = getValidCoordinates(targetsMap);
-    let targetStrike = checkForTargetStrike(launchCoordinates, locationsMap);
-    strikeAttempts += 1; 
-    updateTargetMap(launchCoordinates, targetStrike, targetsMap);
-    if (targetStrike) {
-        totalStrikes += 1;  
-    }
-    missilesRemaining = totalMissiles - strikeAttempts;
-    hitsToWin = totalTargets - totalStrikes;
-    displayResults(targetStrike, missilesRemaining, hitsToWin, targetsMap);
-} while (hitsToWin !== 0 && missilesRemaining >= hitsToWin);
+    isValidPlacement = true; 
+    shipCoordinates = [];
+    // ... attempt to place ship ...
+} while (!isValidPlacement);
 ```
 
-50. In what order are the key operations performed in each iteration of the main game loop?
+50. Why is `shipCoordinates` reset to an empty array at the beginning of each loop iteration?
 
-    <!-- Lengths: C=161 | D1=118 | D2=118 | D3=118 -->
+---
 
 ---
 
